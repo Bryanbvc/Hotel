@@ -1,0 +1,54 @@
+=========================================================
+SISTEMA DE RESERVAS - HOTEL RÍOS DEL SUR
+Instrucciones de Instalación y Despliegue Local
+=========================================================
+
+1. REQUISITOS PREVIOS
+---------------------------------------------------------
+Asegúrese de tener instalados los siguientes programas:
+- Python (versión 3.8 o superior).
+- XAMPP (u otro entorno que incluya servidor MySQL).
+- Git (opcional, para clonar el repositorio).
+
+
+2. CONFIGURACIÓN DE LA BASE DE DATOS (MYSQL)
+---------------------------------------------------------
+Paso 2.1: Abra el panel de control de XAMPP e inicie los módulos "Apache" y "MySQL".
+Paso 2.2: Abra su navegador web y vaya a: http://localhost/phpmyadmin
+Paso 2.3: Cree una nueva base de datos vacía. Se recomienda nombrarla "bd_hotel" o el nombre que esté configurado en el archivo settings.py de Django.
+Paso 2.4: Asegúrese de que el usuario y contraseña de la base de datos coincidan con su archivo de configuración (por defecto en XAMPP es usuario "root" y contraseña en blanco).
+
+
+3. CONFIGURACIÓN DEL ENTORNO Y DEPENDENCIAS
+---------------------------------------------------------
+Paso 3.1: Abra una terminal (símbolo del sistema o PowerShell) y ubíquese en la carpeta raíz del proyecto clonado/descargado.
+Paso 3.2: Cree un entorno virtual para aislar las dependencias del proyecto ejecutando:
+          python -m venv venv
+
+Paso 3.3: Active el entorno virtual:
+          - En Windows: 
+            venv\Scripts\activate
+          - En Mac/Linux: 
+            source venv/bin/activate
+
+Paso 3.4: Con el entorno activado, instale las librerías necesarias ejecutando:
+          pip install -r requirements.txt
+
+
+4. MIGRACIONES Y EJECUCIÓN DEL SISTEMA
+---------------------------------------------------------
+Paso 4.1: Prepare la base de datos creando las tablas del sistema con los siguientes comandos:
+          python manage.py makemigrations
+          python manage.py migrate
+
+Paso 4.2: (Opcional pero recomendado) Cree una cuenta de administrador para el sistema:
+          python manage.py createsuperuser
+          (Siga las instrucciones en consola para asignar usuario, correo y contraseña).
+
+Paso 4.3: Levante el servidor de desarrollo local ejecutando:
+          python manage.py runserver
+
+Paso 4.4: Abra su navegador web y visite: 
+          http://127.0.0.1:8000/
+          Para acceder al panel de administración, vaya a:
+          http://127.0.0.1:8000/admin/
