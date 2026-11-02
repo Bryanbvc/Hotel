@@ -1,0 +1,68 @@
+{% extends 'hotel/base.html' %}
+
+{% block titulo %}Reservas{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3">Reservas</h1>
+  <a href="{% url 'disponibilidad' %}" class="btn btn-primary">Nueva reserva</a>
+</div>
+
+<form method="get" class="d-flex gap-2 mb-3">
+  <select name="estado" class="form-select w-auto">
+    <option value="">Todos los estados</option>
+    {% for valor, etiqueta in estados %}
+      <option value="{{ valor }}" {% if valor == estado_actual %}selected{% endif %}>{{ etiqueta }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-outline-secondary">Filtrar</button>
+</form>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>N°</th>
+      <th>Huésped</th>
+      <th>Habitación</th>
+      <th>Entrada</th>
+      <th>Salida</th>
+      <th>Total</th>
+      <th>Estado</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in reservas %}
+    <tr>
+      <td>{{ r.pk }}</td>
+      <td>{{ r.huesped.nombre }} {{ r.huesped.apellido }}</td>
+      <td>{{ r.habitacion.numero }} ({{ r.habitacion.tipo.nombre }})</td>
+      <td>{{ r.fecha_entrada|date:"d/m/Y" }}</td>
+      <td>{{ r.fecha_salida|date:"d/m/Y" }}</td>
+      <td>${{ r.total|floatformat:"0g" }}</td>
+      <td>{{ r.get_estado_display }}</td>
+      <td class="text-end text-nowrap">
+        {% if r.estado == 'reservada' %}
+          <form method="post" action="{% url 'reserva_checkin' r.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-success">Check-in</button>
+          </form>
+          <form method="post" action="{% url 'reserva_cancelar' r.pk %}" class="d-inline"
+                onsubmit="return confirm('¿Cancelar la reserva #{{ r.pk }}?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-danger">Cancelar</button>
+          </form>
+        {% elif r.estado == 'en_estadia' %}
+          <form method="post" action="{% url 'reserva_checkout' r.pk %}" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-primary">Check-out</button>
+          </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="8" class="text-center">No hay reservas registradas.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

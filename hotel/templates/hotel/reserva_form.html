@@ -1,0 +1,18 @@
+{% extends 'hotel/form_generico.html' %}
+
+{% block resumen %}
+<div class="card mb-3" style="max-width: 480px;">
+  <div class="card-body">
+    <h2 class="h6 text-muted">Resumen de la reserva</h2>
+    <p class="mb-1"><strong>{{ habitacion }}</strong> · {{ habitacion.tipo.nombre }} (capacidad {{ habitacion.tipo.capacidad }})</p>
+    <p class="mb-1">Entrada: {{ entrada|date:"d/m/Y" }} · Salida: {{ salida|date:"d/m/Y" }}</p>
+    <p class="mb-1">{{ noches }} noche{{ noches|pluralize }} × ${{ habitacion.tipo.tarifa_noche|floatformat:"0g" }}</p>
+    <p class="mb-0 fs-5">Total: <strong>${{ total|floatformat:"0g" }}</strong></p>
+  </div>
+</div>
+<p class="small">
+  ¿El huésped no está registrado?
+  <a href="{% url 'huesped_crear' %}" target="_blank" rel="noopener">Regístralo aquí</a>
+  y luego recarga esta página.
+</p>
+{% endblock %}

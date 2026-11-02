@@ -1,0 +1,63 @@
+{% extends 'hotel/base.html' %}
+
+{% block titulo %}Disponibilidad{% endblock %}
+
+{% block contenido %}
+<h1 class="h3 mb-3">Consulta de disponibilidad</h1>
+
+<form method="get" class="row g-3 mb-4">
+  {% for campo in form %}
+  <div class="col-md-3">
+    <label for="{{ campo.id_for_label }}" class="form-label">{{ campo.label }}</label>
+    {{ campo }}
+    {% for error in campo.errors %}
+      <div class="text-danger small">{{ error }}</div>
+    {% endfor %}
+  </div>
+  {% endfor %}
+  <div class="col-md-3 d-flex align-items-end">
+    <button type="submit" class="btn btn-primary">Buscar</button>
+  </div>
+</form>
+
+{% if resultados is not None %}
+  <h2 class="h5 mb-3">
+    {{ resultados|length }} habitación{{ resultados|length|pluralize:"es" }}
+    disponible{{ resultados|length|pluralize }}
+    del {{ entrada|date:"d/m/Y" }} al {{ salida|date:"d/m/Y" }}
+    ({{ noches }} noche{{ noches|pluralize }})
+  </h2>
+
+  <table class="table table-striped align-middle">
+    <thead>
+      <tr>
+        <th>Habitación</th>
+        <th>Tipo</th>
+        <th>Capacidad</th>
+        <th>Tarifa por noche</th>
+        <th>Total</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in resultados %}
+      <tr>
+        <td>{{ r.habitacion.numero }}</td>
+        <td>{{ r.habitacion.tipo.nombre }}</td>
+        <td>{{ r.habitacion.tipo.capacidad }}</td>
+        <td>${{ r.habitacion.tipo.tarifa_noche|floatformat:"0g" }}</td>
+        <td><strong>${{ r.total|floatformat:"0g" }}</strong></td>
+        <td class="text-end">
+          <a class="btn btn-sm btn-success"
+             href="{% url 'reserva_crear' %}?habitacion={{ r.habitacion.pk }}&amp;fecha_entrada={{ entrada|date:'Y-m-d' }}&amp;fecha_salida={{ salida|date:'Y-m-d' }}">
+            Reservar
+          </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="text-center">No hay habitaciones disponibles para esas fechas.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+{% endblock %}
