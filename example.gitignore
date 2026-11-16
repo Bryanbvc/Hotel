@@ -1,10 +1,26 @@
-# Created by venv; see https://docs.python.org/3/library/venv.html
+# Entorno virtual
 venv/
 .venv/
+env/
+
+# Secretos y configuración local
 .env
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
+
+# Django
 logs/
+*.log
 db.sqlite3
+*.sqlite3
+staticfiles/
+media/
+
+# Editores y sistema operativo
 .idea/
 .vscode/
+.DS_Store
+Thumbs.db
