@@ -245,9 +245,3 @@ El archivo `database/hotel_rios_del_sur_estructura.sql` contiene la estructura c
 - Informe técnico: `docs/informe_tecnico.pdf`
 - Diagrama de la base de datos: `docs/diagrama_base_de_datos.png`
 
-## Autor
-
-- **Nombre:** [Tu nombre completo]
-- **Asignatura:** Ingeniería de Software – Evaluación 3
-- **Institución:** [Nombre de tu institución]
-- **Docente:** [Nombre del docente]
