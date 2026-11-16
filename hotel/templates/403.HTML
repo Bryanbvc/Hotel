@@ -1,0 +1,9 @@
+{% extends 'hotel/base.html' %}
+{% block titulo %}Acceso denegado{% endblock %}
+{% block contenido %}
+<div class="alert alert-danger">
+  <h4 class="alert-heading">Acceso denegado</h4>
+  <p class="mb-0">Tu perfil no tiene permiso para realizar esta acción.</p>
+</div>
+<a href="{% url 'inicio' %}" class="btn btn-secondary">Volver al inicio</a>
+{% endblock %}

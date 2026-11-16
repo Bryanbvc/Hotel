@@ -1,0 +1,52 @@
+{% extends 'hotel/base.html' %}
+
+{% block titulo %}Tablero de habitaciones{% endblock %}
+
+{% block contenido %}
+<h1 class="h3 mb-3">Tablero de habitaciones</h1>
+
+<div class="row g-2 mb-4">
+  {% for etiqueta, cantidad, color in resumen %}
+  <div class="col-6 col-md-3">
+    <div class="card text-bg-{{ color }}">
+      <div class="card-body py-2">
+        <div class="fs-3 fw-bold">{{ cantidad }}</div>
+        <div>{{ etiqueta }}</div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="row g-3">
+  {% for h in habitaciones %}
+  <div class="col-sm-6 col-lg-3">
+    <div class="card h-100 border-{{ h.color }}">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <h2 class="h5">{{ h.numero }}</h2>
+          <span class="badge text-bg-{{ h.color }}">{{ h.get_estado_display }}</span>
+        </div>
+        <p class="text-muted mb-1">{{ h.tipo.nombre }} · capacidad {{ h.tipo.capacidad }}</p>
+        {% if h.reserva_actual %}
+        <p class="mb-0 small">
+          {{ h.reserva_actual.huesped.nombre }} {{ h.reserva_actual.huesped.apellido }}<br>
+          Sale el {{ h.reserva_actual.fecha_salida|date:"d/m/Y" }}
+        </p>
+        {% endif %}
+      </div>
+      {% if h.estado == 'limpieza' %}
+      <div class="card-footer bg-transparent">
+        <form method="post" action="{% url 'habitacion_disponible' h.pk %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm btn-success">Marcar disponible</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-center">No hay habitaciones registradas.</p>
+  {% endfor %}
+</div>
+{% endblock %}

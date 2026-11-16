@@ -1,0 +1,92 @@
+{% extends 'hotel/base.html' %}
+
+{% block titulo %}Llegadas y salidas{% endblock %}
+
+{% block contenido %}
+<h1 class="h3 mb-4">Llegadas y salidas del {{ hoy|date:"d/m/Y" }}</h1>
+
+<h2 class="h5">Llegadas de hoy ({{ llegadas|length }})</h2>
+<table class="table table-striped align-middle mb-4">
+  <thead>
+    <tr><th>N°</th><th>Huésped</th><th>Habitación</th><th>Salida</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for r in llegadas %}
+    <tr>
+      <td>{{ r.pk }}</td>
+      <td>{{ r.huesped.nombre }} {{ r.huesped.apellido }}</td>
+      <td>{{ r.habitacion.numero }} ({{ r.habitacion.tipo.nombre }})</td>
+      <td>{{ r.fecha_salida|date:"d/m/Y" }}</td>
+      <td class="text-end">
+        <form method="post" action="{% url 'reserva_checkin' r.pk %}" class="d-inline">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="btn btn-sm btn-success">Check-in</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5" class="text-center">No hay llegadas pendientes para hoy.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2 class="h5">Salidas de hoy ({{ salidas|length }})</h2>
+<table class="table table-striped align-middle mb-4">
+  <thead>
+    <tr><th>N°</th><th>Huésped</th><th>Habitación</th><th>Salida</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for r in salidas %}
+    <tr>
+      <td>{{ r.pk }}</td>
+      <td>{{ r.huesped.nombre }} {{ r.huesped.apellido }}</td>
+      <td>{{ r.habitacion.numero }} ({{ r.habitacion.tipo.nombre }})</td>
+      <td>{{ r.fecha_salida|date:"d/m/Y" }}</td>
+      <td class="text-end">
+        <form method="post" action="{% url 'reserva_checkout' r.pk %}" class="d-inline">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="btn btn-sm btn-primary">Check-out</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5" class="text-center">No hay salidas pendientes para hoy.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if atrasadas %}
+<h2 class="h5">Reservas vencidas sin check-in ({{ atrasadas|length }})</h2>
+<p class="text-muted small">Su fecha de entrada ya pasó. Haz el check-in si el huésped llegó, o márcalas como No presentado.</p>
+<table class="table table-striped align-middle">
+  <thead>
+    <tr><th>N°</th><th>Huésped</th><th>Habitación</th><th>Entrada</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for r in atrasadas %}
+    <tr>
+      <td>{{ r.pk }}</td>
+      <td>{{ r.huesped.nombre }} {{ r.huesped.apellido }}</td>
+      <td>{{ r.habitacion.numero }} ({{ r.habitacion.tipo.nombre }})</td>
+      <td>{{ r.fecha_entrada|date:"d/m/Y" }}</td>
+      <td class="text-end text-nowrap">
+        <form method="post" action="{% url 'reserva_checkin' r.pk %}" class="d-inline">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="btn btn-sm btn-success">Check-in</button>
+        </form>
+        <form method="post" action="{% url 'reserva_no_presentado' r.pk %}" class="d-inline"
+              onsubmit="return confirm('¿Marcar la reserva #{{ r.pk }} como No presentado?');">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.path }}">
+          <button type="submit" class="btn btn-sm btn-outline-secondary">No presentado</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

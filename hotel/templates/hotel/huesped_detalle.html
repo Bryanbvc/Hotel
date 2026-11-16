@@ -1,0 +1,44 @@
+{% extends 'hotel/base.html' %}
+
+{% block titulo %}{{ huesped.nombre }} {{ huesped.apellido }}{% endblock %}
+
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h3">{{ huesped.nombre }} {{ huesped.apellido }}</h1>
+  <a href="{% url 'huesped_lista' %}" class="btn btn-outline-secondary">Volver</a>
+</div>
+
+<dl class="row">
+  <dt class="col-sm-3">Documento</dt>
+  <dd class="col-sm-9">{{ huesped.get_tipo_documento_display }}: {{ huesped.documento }}</dd>
+  <dt class="col-sm-3">Correo</dt>
+  <dd class="col-sm-9">{{ huesped.email|default:"—" }}</dd>
+  <dt class="col-sm-3">Teléfono</dt>
+  <dd class="col-sm-9">{{ huesped.telefono|default:"—" }}</dd>
+</dl>
+
+<h2 class="h5 mt-4">Historial de reservas</h2>
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>N°</th><th>Habitación</th><th>Entrada</th><th>Salida</th>
+      <th>Pers.</th><th>Total</th><th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in reservas %}
+    <tr>
+      <td>{{ r.pk }}</td>
+      <td>{{ r.habitacion.numero }} ({{ r.habitacion.tipo.nombre }})</td>
+      <td>{{ r.fecha_entrada|date:"d/m/Y" }}</td>
+      <td>{{ r.fecha_salida|date:"d/m/Y" }}</td>
+      <td>{{ r.numero_huespedes }}</td>
+      <td>${{ r.total|floatformat:"0g" }}</td>
+      <td>{{ r.get_estado_display }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7" class="text-center">Este huésped aún no tiene reservas.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
